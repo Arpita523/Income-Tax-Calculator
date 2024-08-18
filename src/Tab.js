@@ -2,111 +2,40 @@ import React, { useState } from "react"
 import BasicDetails from "./BasicDetails"
 import IncomeDetails from "./IncomeDetails"
 import Deductions from "./Deductions"
-import NewRegimeCalculation from "./NewRegimeCalculaion"
+import { useDispatch } from "react-redux"
+import { calculateNewRegime, updateFormData } from "./reducers/taxSlice"
 
 const Tab = () => {
   const [activeTab, setActiveTab] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
-  const [showResults, setShowResults] = useState(false)
+  const dispatch = useDispatch()
 
   const handleTabClick = (tabNumber) => {
     setActiveTab(tabNumber)
   }
 
   const handleNext = () => {
-    setActiveTab(activeTab + 1) // Increment activeTab
+    setActiveTab(activeTab + 1)
   }
 
-  const [formData, setFormData] = useState({
-    //Income Details
-    incomeDetails: {
-      salaryIncome: {
-        basicSalary: "",
-        hraReceived: "",
-        actualRent: "",
-        otherTaxableAllowance: "",
-      },
-      houseIncomeProperty: {
-        interestOnBorrowedProperty: "",
-        rentReceived: "",
-        muncipalTax: "",
-        interestOnBorrowedCapital: "",
-      },
-      capitalGains: {
-        shortTermCapitalGains15: "",
-        shortTermCapitalGains30: "",
-        shortTermCapitalGainsSlab: "",
-        longTermCapitalGains10: "",
-        longTermCapitalGains20: "",
-      },
-      bussinessAndProfessionIncome: {
-        profit: "",
-      },
-      otherIncomes: {
-        savingsAccountInterest: "",
-        fixedDepositInterest: "",
-        domesticDividend: "",
-        otherIncome: "",
-      },
-    },
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    dispatch(
+      updateFormData({ tab: activeTab, section: null, field: name, value })
+    )
+  }
 
-    // Deductions
-    deductions: {
-      investments: {
-        ELSS: "",
-        EPF: "",
-        PPF: "",
-        LICPremium: "",
-        otherInvestment: "",
-        NPSInvestment: "",
-      },
-      nps: {
-        Employeecontribution80CCD1B: "",
-        Employeecontribution80CCD2: "",
-      },
-      medical: {
-        selfFamily: "",
-        parents: "",
-        parentsSeniorCitizen: "",
-      },
-      otherDeductions: {
-        donationCharity: "",
-        interestOnSavingDeposits: "",
-        interestOnElectricVehicle: "",
-        interestOnEducationLoan: "",
-      },
-    },
-  })
-
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault()
     setIsLoading(true)
 
-    // Store formData in local storage
-    localStorage.setItem("formData", JSON.stringify(formData))
-    // Trigger the calculation
-    NewRegimeCalculation()
+    // Dispatch the calculateNewRegime action
+    dispatch(calculateNewRegime())
 
     setTimeout(() => {
       console.log("Data Loaded..!!")
-      console.log("Form Data:", formData) // Log the collected data
-
       setIsLoading(false)
     }, 1000)
-  }
-
-  // Function to update formData when input fields change
-  const handleInputChange = (tab, section, field, value) => {
-    const sectionToUpdate = tab === 2 ? "incomeDetails" : "deductions"
-    setFormData((prevData) => ({
-      ...prevData,
-      [sectionToUpdate]: {
-        ...prevData[sectionToUpdate],
-        [section]: {
-          ...prevData[sectionToUpdate][section],
-          [field]: value,
-        },
-      },
-    }))
   }
 
   return (
@@ -154,20 +83,9 @@ const Tab = () => {
             <BasicDetails handleNext={handleNext} activeTab={activeTab} />
           )}
           {activeTab === 2 && (
-            <IncomeDetails
-              activeTab={activeTab}
-              onNext={handleNext}
-              formData={formData}
-              onInputChange={handleInputChange}
-            />
+            <IncomeDetails activeTab={activeTab} onNext={handleNext} />
           )}
-          {activeTab === 3 && (
-            <Deductions
-              activeTab={activeTab}
-              formData={formData}
-              onInputChange={handleInputChange}
-            />
-          )}
+          {activeTab === 3 && <Deductions activeTab={activeTab} />}
 
           {activeTab === 3 && (
             <div>

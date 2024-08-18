@@ -1,7 +1,6 @@
-import "./App.css"
 import Headers from "./Headers"
-//import Test1 from "./Test1"
 import Tab from "./Tab"
+import NewRegimeCalculation from "./NewRegimeCalculaion"
 import TaxCalculation from "./TaxCalculation"
 
 function App() {
@@ -9,6 +8,7 @@ function App() {
     <div className="App">
       <Headers />
       <Tab />
+      <NewRegimeCalculation /> {/* Keep this component for now */}
       <TaxCalculation />
     </div>
   )

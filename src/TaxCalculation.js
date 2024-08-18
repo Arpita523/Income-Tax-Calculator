@@ -1,62 +1,18 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { clearAllData } from "./reducers/taxSlice"
 
 const TaxCalculation = () => {
-  const [tableData, setTableData] = useState([
-    { label: "Gross Total Income", oldValue: 0, newValue: 0 },
-    { label: "Total Deductions", oldValue: 0, newValue: 0 },
-    { label: "Gross Taxable Income", oldValue: 0, newValue: 0 },
-    { label: "Tax on Total Income", oldValue: 0, newValue: 0 },
-    { label: "Surcharge", oldValue: 0, newValue: 0 },
-    { label: "Health and Education Cess", oldValue: 0, newValue: 0 },
-    { label: "Total Tax payable", oldValue: 0, newValue: 0 },
-  ])
+  const newRegimeCalculation = useSelector(
+    (state) => state.taxCalculator.newRegimeCalculation
+  )
+  // You'll need to add a selector for oldRegimeCalculation once you implement it
+  // const oldRegimeCalculation = useSelector( ... );
 
-  useEffect(() => {
-    const newRegimeData = JSON.parse(
-      localStorage.getItem("newRegimeCalculation")
-    )
-    if (newRegimeData) {
-      setTableData([
-        {
-          label: "Gross Total Income",
-          oldValue: 0,
-          newValue: newRegimeData.Gross_Total_Income,
-        },
-        {
-          label: "Total Deductions",
-          oldValue: 0,
-          newValue: newRegimeData.Total_Deductions,
-        },
-        {
-          label: "Gross Taxable Income",
-          oldValue: 0,
-          newValue: newRegimeData.Gross_Taxable_Income,
-        },
-        {
-          label: "Tax on Total Income",
-          oldValue: 0,
-          newValue: newRegimeData.calculatedTax,
-        },
-        { label: "Surcharge", oldValue: 0, newValue: newRegimeData.surcharge },
-        {
-          label: "Health and Education Cess",
-          oldValue: 0,
-          newValue: newRegimeData.cess,
-        },
-        {
-          label: "Total Tax payable",
-          oldValue: 0,
-          newValue: newRegimeData.Total_Tax_payable,
-        },
-      ])
-    }
-  }, [])
+  const dispatch = useDispatch()
 
   const handleClearAll = () => {
-    setTableData(
-      tableData.map((item) => ({ ...item, oldValue: 0, newValue: 0 }))
-    )
-    localStorage.removeItem("newRegimeCalculation")
+    dispatch(clearAllData())
   }
 
   const formatCurrency = (value) => {
@@ -64,6 +20,11 @@ const TaxCalculation = () => {
       style: "currency",
       currency: "INR",
     }).format(value)
+  }
+
+  // Function to extract labels (keys) from calculation objects
+  const getLabels = (obj) => {
+    return Object.keys(obj).map((key) => key.replace(/_/g, " "))
   }
 
   return (
@@ -81,14 +42,19 @@ const TaxCalculation = () => {
               <th className="py-4 px-6 bg-gray-50 font-bold text-left text-lg border border-gray-200">
                 Particulars
               </th>
-              <th
+              {/* Hide the "Tax Regime" header for now */}
+              {/* <th
                 className="py-4 px-6 bg-gray-50 font-bold text-center text-lg border border-gray-200"
-                colSpan="2"
+                colSpan="2" 
               >
                 Tax Regime
+              </th> */}
+              <th className="py-4 px-6 bg-gray-50 font-bold text-center text-lg border border-gray-200">
+                New Regime
               </th>
             </tr>
-            <tr>
+            {/* Remove the Old regime header row */}
+            {/* <tr>
               <th className="py-2 px-6 bg-gray-50 border border-gray-200"></th>
               <th className="py-2 px-6 bg-gray-50 text-center border border-gray-200">
                 Old
@@ -96,19 +62,22 @@ const TaxCalculation = () => {
               <th className="py-2 px-6 bg-gray-50 text-center border border-gray-200">
                 New
               </th>
-            </tr>
+            </tr> */}
           </thead>
           <tbody>
-            {tableData.map((item, index) => (
+            {getLabels(newRegimeCalculation).map((label, index) => (
               <tr key={index}>
-                <td className="py-3 px-6 border border-gray-200">
-                  {item.label}
-                </td>
+                <td className="py-3 px-6 border border-gray-200">{label}</td>
+                {/* Remove the Old regime cell for now */}
+                {/* <td className="py-3 px-6 text-center border border-gray-200">
+                  {formatCurrency(
+                    // oldRegimeCalculation[label.replace(/ /g, "_")] || 0 
+                  )}
+                </td> */}
                 <td className="py-3 px-6 text-center border border-gray-200">
-                  {formatCurrency(item.oldValue)}
-                </td>
-                <td className="py-3 px-6 text-center border border-gray-200">
-                  {formatCurrency(item.newValue)}
+                  {formatCurrency(
+                    newRegimeCalculation[label.replace(/ /g, "_")] || 0
+                  )}
                 </td>
               </tr>
             ))}
@@ -116,8 +85,9 @@ const TaxCalculation = () => {
         </table>
         <div className="h-4 bg-gray-50"></div>
         <div className="bg-blue-100 py-3 px-6 text-center border-t border-blue-200">
-          Total Tax payable is {formatCurrency(tableData[6].newValue)} under New
-          Tax Regime
+          Total Tax payable is{" "}
+          {formatCurrency(newRegimeCalculation.Total_Tax_payable)} under New Tax
+          Regime
         </div>
       </div>
     </div>

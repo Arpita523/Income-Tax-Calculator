@@ -1,7 +1,8 @@
-// Deductions.js
 import React, { useEffect, useRef, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { updateFormData } from "./reducers/taxSlice"
 
-const Deductions = ({ formData, onInputChange, activeTab }) => {
+const Deductions = ({ activeTab }) => {
   const [isOpenInvestments, setIsOpenInvestments] = useState(false)
   const [isOpenNPS, setIsOpenNPS] = useState(false)
   const [isOpenMedical, setIsOpenMedical] = useState(false)
@@ -63,8 +64,11 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
     }
   }, [isOpenInvestments, isOpenNPS, isOpenMedical, isOpenOtherDeductions])
 
+  const dispatch = useDispatch()
+  const deductions = useSelector((state) => state.taxCalculator.deductions)
+
   const handleChange = (section, field, value) => {
-    onInputChange(3, section, field, value)
+    dispatch(updateFormData({ tab: 3, section, field, value }))
   }
 
   // Function to get circle check SVG based on filled status
@@ -109,12 +113,12 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
         >
           <div className="flex items-center gap-3">
             {getCircleCheckSVG(
-              formData.deductions.investments.ELSS !== "" ||
-                formData.deductions.investments.EPF !== "" ||
-                formData.deductions.investments.PPF !== "" ||
-                formData.deductions.investments.LICPremium !== "" ||
-                formData.deductions.investments.otherInvestment !== "" ||
-                formData.deductions.investments.NPSInvestment !== ""
+              deductions.investments.ELSS !== "" || // Use deductions from Redux
+                deductions.investments.EPF !== "" ||
+                deductions.investments.PPF !== "" ||
+                deductions.investments.LICPremium !== "" ||
+                deductions.investments.otherInvestment !== "" ||
+                deductions.investments.NPSInvestment !== ""
             )}
             <div>
               <h4 className="text-lg font-semibold text-gray-800">
@@ -164,7 +168,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="ELSS"
                     placeholder="0"
-                    value={formData.deductions.investments.ELSS}
+                    value={deductions.investments.ELSS}
                     onChange={(e) =>
                       handleChange("investments", "ELSS", e.target.value)
                     }
@@ -190,7 +194,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="EPF"
                     placeholder="0"
-                    value={formData.deductions.investments.EPF}
+                    value={deductions.investments.EPF}
                     onChange={(e) =>
                       handleChange("investments", "EPF", e.target.value)
                     }
@@ -216,7 +220,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="PPF"
                     placeholder="0"
-                    value={formData.deductions.investments.PPF}
+                    value={deductions.investments.PPF}
                     onChange={(e) =>
                       handleChange("investments", "PPF", e.target.value)
                     }
@@ -242,7 +246,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="LICPremium"
                     placeholder="0"
-                    value={formData.deductions.investments.LICPremium}
+                    value={deductions.investments.LICPremium}
                     onChange={(e) =>
                       handleChange("investments", "LICPremium", e.target.value)
                     }
@@ -268,7 +272,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="otherInvestment"
                     placeholder="0"
-                    value={formData.deductions.investments.otherInvestment}
+                    value={deductions.investments.otherInvestment}
                     onChange={(e) =>
                       handleChange(
                         "investments",
@@ -298,7 +302,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="NPSInvestment"
                     placeholder="0"
-                    value={formData.deductions.investments.NPSInvestment}
+                    value={deductions.investments.NPSInvestment}
                     onChange={(e) =>
                       handleChange(
                         "investments",
@@ -332,8 +336,8 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
         >
           <div className="flex items-center gap-3">
             {getCircleCheckSVG(
-              formData.deductions.nps.Employeecontribution80CCD1B !== "" || // Check formData directly
-                formData.deductions.nps.Employeecontribution80CCD2 !== ""
+              deductions.nps.Employeecontribution80CCD1B !== "" || // Use deductions from Redux
+                deductions.nps.Employeecontribution80CCD2 !== ""
             )}
             <div>
               <h4 className="text-lg font-semibold text-gray-800">NPS</h4>
@@ -381,7 +385,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="Employeecontribution80CCD1B"
                     placeholder="0"
-                    value={formData.deductions.nps.Employeecontribution80CCD1B} // Bind to formData
+                    value={deductions.nps.Employeecontribution80CCD1B} // Bind to formData
                     onChange={(e) =>
                       handleChange(
                         "nps",
@@ -410,7 +414,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="Employeecontribution80CCD1B"
                     placeholder="0"
-                    value={formData.deductions.nps.Employeecontribution80CCD2} // Bind to formData
+                    value={deductions.nps.Employeecontribution80CCD2} // Bind to formData
                     onChange={(e) =>
                       handleChange(
                         "nps",
@@ -444,9 +448,9 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
         >
           <div className="flex items-center gap-3">
             {getCircleCheckSVG(
-              formData.deductions.medical.selfFamily !== "" || // Check formData directly
-                formData.deductions.medical.parents !== "" ||
-                formData.deductions.medical.parentsSeniorCitizen !== ""
+              deductions.medical.selfFamily !== "" || // Use deductions from Redux
+                deductions.medical.parents !== "" ||
+                deductions.medical.parentsSeniorCitizen !== ""
             )}
 
             <div>
@@ -494,7 +498,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="selfFamily"
                     placeholder="0"
-                    value={formData.deductions.medical.selfFamily} // Bind to formData
+                    value={deductions.medical.selfFamily} // Bind to formData
                     onChange={(e) =>
                       handleChange("medical", "selfFamily", e.target.value)
                     }
@@ -519,7 +523,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="parents"
                     placeholder="0"
-                    value={formData.deductions.medical.parents}
+                    value={deductions.medical.parents}
                     onChange={(e) =>
                       handleChange("medical", "parents", e.target.value)
                     }
@@ -544,7 +548,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="parentsSeniorCitizen"
                     placeholder="0"
-                    value={formData.deductions.medical.parentsSeniorCitizen}
+                    value={deductions.medical.parentsSeniorCitizen}
                     onChange={(e) =>
                       handleChange(
                         "medical",
@@ -577,13 +581,10 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
         >
           <div className="flex items-center gap-3">
             {getCircleCheckSVG(
-              formData.deductions.otherDeductions.donationCharity !== "" || // Check formData directly
-                formData.deductions.otherDeductions.interestOnSavingDeposits !==
-                  "" ||
-                formData.deductions.otherDeductions
-                  .interestOnElectricVehicle !== "" ||
-                formData.deductions.otherDeductions.interestOnEducationLoan !==
-                  ""
+              deductions.otherDeductions.donationCharity !== "" || // Use deductions from Redux
+                deductions.otherDeductions.interestOnSavingDeposits !== "" ||
+                deductions.otherDeductions.interestOnElectricVehicle !== "" ||
+                deductions.otherDeductions.interestOnEducationLoan !== ""
             )}
             <div>
               <h4 className="text-lg font-semibold text-gray-800">
@@ -633,7 +634,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="donationCharity"
                     placeholder="0"
-                    value={formData.deductions.otherDeductions.donationCharity} // Bind to formData
+                    value={deductions.otherDeductions.donationCharity} // Bind to formData
                     onChange={(e) =>
                       handleChange(
                         "otherDeductions",
@@ -663,10 +664,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="interestOnSavingDeposits"
                     placeholder="0"
-                    value={
-                      formData.deductions.otherDeductions
-                        .interestOnSavingDeposits
-                    }
+                    value={deductions.otherDeductions.interestOnSavingDeposits}
                     onChange={(e) =>
                       handleChange(
                         "otherDeductions",
@@ -696,10 +694,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="interestOnElectricVehicle"
                     placeholder="0"
-                    value={
-                      formData.deductions.otherDeductions
-                        .interestOnElectricVehicle
-                    }
+                    value={deductions.otherDeductions.interestOnElectricVehicle}
                     onChange={(e) =>
                       handleChange(
                         "otherDeductions",
@@ -729,10 +724,7 @@ const Deductions = ({ formData, onInputChange, activeTab }) => {
                     type="number"
                     name="interestOnEducationLoan"
                     placeholder="0"
-                    value={
-                      formData.deductions.otherDeductions
-                        .interestOnEducationLoan
-                    }
+                    value={deductions.otherDeductions.interestOnEducationLoan}
                     onChange={(e) =>
                       handleChange(
                         "otherDeductions",

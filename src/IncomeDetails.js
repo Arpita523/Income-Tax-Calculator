@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react"
+import { updateFormData } from "./reducers/taxSlice"
+import { useDispatch, useSelector } from "react-redux"
 
-const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
+const IncomeDetails = ({ activeTab, onNext }) => {
   const [cityType, setCityType] = useState("Metro")
   const [isOpenSalary, setIsOpenSalary] = useState(false)
   const [isOpenProperty, setIsOpenProperty] = useState(false)
@@ -13,6 +15,11 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
   const contentRefCapitalGain = useRef(null)
   const contentRefProfessionIncome = useRef(null)
   const contentRefOtherIncomes = useRef(null)
+
+  const dispatch = useDispatch()
+  const incomeDetails = useSelector(
+    (state) => state.taxCalculator.incomeDetails
+  )
 
   const handleCityType = (event) => {
     setCityType(event.target.value)
@@ -89,7 +96,7 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
   ])
 
   const handleChange = (section, field, value) => {
-    onInputChange(2, section, field, value)
+    dispatch(updateFormData({ tab: 2, section, field, value }))
   }
 
   // Function to get circle check SVG based on filled status
@@ -136,11 +143,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
             >
               <div className="flex items-center gap-3">
                 {getCircleCheckSVG(
-                  formData.incomeDetails.salaryIncome.basicSalary !== "" ||
-                    formData.incomeDetails.salaryIncome.hraReceived !== "" ||
-                    formData.incomeDetails.salaryIncome.actualRent !== "" ||
-                    formData.incomeDetails.salaryIncome
-                      .otherTaxableAllowance !== ""
+                  incomeDetails.salaryIncome.basicSalary !== "" ||
+                    incomeDetails.salaryIncome.hraReceived !== "" ||
+                    incomeDetails.salaryIncome.actualRent !== "" ||
+                    incomeDetails.salaryIncome.otherTaxableAllowance !== ""
                 )}
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800">
@@ -189,10 +195,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="basicSalary"
                         placeholder="0"
-                        value={formData.incomeDetails.salaryIncome.basicSalary}
+                        value={incomeDetails.salaryIncome.basicSalary}
                         onChange={(e) =>
-                          onInputChange(
-                            2, // Tab number
+                          handleChange(
                             "salaryIncome",
                             "basicSalary",
                             e.target.value
@@ -218,10 +223,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="hraReceived"
                         placeholder="0"
-                        value={formData.incomeDetails.salaryIncome.hraReceived}
+                        value={incomeDetails.salaryIncome.hraReceived}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "salaryIncome",
                             "hraReceived",
                             e.target.value
@@ -247,10 +251,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="actualRent"
                         placeholder="0"
-                        value={formData.incomeDetails.salaryIncome.actualRent}
+                        value={incomeDetails.salaryIncome.actualRent}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "salaryIncome",
                             "actualRent",
                             e.target.value
@@ -320,13 +323,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="otherTaxableAllowances"
                         placeholder="0"
-                        value={
-                          formData.incomeDetails.salaryIncome
-                            .otherTaxableAllowance
-                        }
+                        value={incomeDetails.salaryIncome.otherTaxableAllowance}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "salaryIncome",
                             "otherTaxableAllowance",
                             e.target.value
@@ -357,13 +356,11 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
             >
               <div className="flex items-center gap-3">
                 {getCircleCheckSVG(
-                  formData.incomeDetails.houseIncomeProperty
+                  incomeDetails.houseIncomeProperty
                     .interestOnBorrowedProperty !== "" ||
-                    formData.incomeDetails.houseIncomeProperty.rentReceived !==
-                      "" ||
-                    formData.incomeDetails.houseIncomeProperty.muncipalTax !==
-                      "" ||
-                    formData.incomeDetails.houseIncomeProperty
+                    incomeDetails.houseIncomeProperty.rentReceived !== "" ||
+                    incomeDetails.houseIncomeProperty.muncipalTax !== "" ||
+                    incomeDetails.houseIncomeProperty
                       .interestOnBorrowedCapital !== ""
                 )}
                 <div>
@@ -415,12 +412,11 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="interestBorrowedCapital"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.houseIncomeProperty
+                          incomeDetails.houseIncomeProperty
                             .interestOnBorrowedProperty
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "houseIncomeProperty",
                             "interestOnBorrowedProperty",
                             e.target.value
@@ -447,13 +443,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="rentReceived"
                         placeholder="0"
-                        value={
-                          formData.incomeDetails.houseIncomeProperty
-                            .rentReceived
-                        }
+                        value={incomeDetails.houseIncomeProperty.rentReceived}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "houseIncomeProperty",
                             "rentReceived",
                             e.target.value
@@ -479,12 +471,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="municipalTax"
                         placeholder="0"
-                        value={
-                          formData.incomeDetails.houseIncomeProperty.muncipalTax
-                        }
+                        value={incomeDetails.houseIncomeProperty.muncipalTax}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "houseIncomeProperty",
                             "muncipalTax",
                             e.target.value
@@ -511,12 +500,11 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="interestBorrowedCapital"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.houseIncomeProperty
+                          incomeDetails.houseIncomeProperty
                             .interestOnBorrowedCapital
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "houseIncomeProperty",
                             "interestOnBorrowedCapital",
                             e.target.value
@@ -547,16 +535,12 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
             >
               <div className="flex items-center gap-3">
                 {getCircleCheckSVG(
-                  formData.incomeDetails.capitalGains
-                    .shortTermCapitalGains15 !== "" ||
-                    formData.incomeDetails.capitalGains
-                      .shortTermCapitalGains30 !== "" ||
-                    formData.incomeDetails.capitalGains
-                      .shortTermCapitalGainsSlab !== "" ||
-                    formData.incomeDetails.capitalGains
-                      .longTermCapitalGains10 !== "" ||
-                    formData.incomeDetails.capitalGains
-                      .longTermCapitalGains20 !== ""
+                  incomeDetails.capitalGains.shortTermCapitalGains15 !== "" ||
+                    incomeDetails.capitalGains.shortTermCapitalGains30 !== "" ||
+                    incomeDetails.capitalGains.shortTermCapitalGainsSlab !==
+                      "" ||
+                    incomeDetails.capitalGains.longTermCapitalGains10 !== "" ||
+                    incomeDetails.capitalGains.longTermCapitalGains20 !== ""
                 )}
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800">
@@ -606,12 +590,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="ShortTermCapitalGains15%"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.capitalGains
-                            .shortTermCapitalGains15
+                          incomeDetails.capitalGains.shortTermCapitalGains15
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "capitalGains",
                             "shortTermCapitalGains15",
                             e.target.value
@@ -639,12 +621,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="shortTermCapitalGains30%"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.capitalGains
-                            .shortTermCapitalGains30
+                          incomeDetails.capitalGains.shortTermCapitalGains30
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "capitalGains",
                             "shortTermCapitalGains30",
                             e.target.value
@@ -672,12 +652,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="shortTermCapitalGainsSlab%"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.capitalGains
-                            .shortTermCapitalGainsSlab
+                          incomeDetails.capitalGains.shortTermCapitalGainsSlab
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "capitalGains",
                             "shortTermCapitalGainsSlab",
                             e.target.value
@@ -704,12 +682,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="shortTermCapitalGains10%"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.capitalGains
-                            .longTermCapitalGains10
+                          incomeDetails.capitalGains.longTermCapitalGains10
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "capitalGains",
                             "longTermCapitalGains10",
                             e.target.value
@@ -737,12 +713,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="longTermCapitalGains20%"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.capitalGains
-                            .longTermCapitalGains20
+                          incomeDetails.capitalGains.longTermCapitalGains20
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "capitalGains",
                             "longTermCapitalGains20",
                             e.target.value
@@ -775,8 +749,7 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
             >
               <div className="flex items-center gap-3">
                 {getCircleCheckSVG(
-                  formData.incomeDetails.bussinessAndProfessionIncome.profit !==
-                    ""
+                  incomeDetails.bussinessAndProfessionIncome.profit !== ""
                 )}
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800">
@@ -826,12 +799,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="profit"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.bussinessAndProfessionIncome
-                            .profit
+                          incomeDetails.bussinessAndProfessionIncome.profit
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "bussinessAndProfessionIncome",
                             "profit",
                             e.target.value
@@ -862,13 +833,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
             >
               <div className="flex items-center gap-3">
                 {getCircleCheckSVG(
-                  formData.incomeDetails.otherIncomes.savingsAccountInterest !==
-                    "" ||
-                    formData.incomeDetails.otherIncomes.fixedDepositInterest !==
-                      "" ||
-                    formData.incomeDetails.otherIncomes.domesticDividend !==
-                      "" ||
-                    formData.incomeDetails.otherIncomes.otherIncome !== ""
+                  incomeDetails.otherIncomes.savingsAccountInterest !== "" ||
+                    incomeDetails.otherIncomes.fixedDepositInterest !== "" ||
+                    incomeDetails.otherIncomes.domesticDividend !== "" ||
+                    incomeDetails.otherIncomes.otherIncome !== ""
                 )}
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800">
@@ -918,12 +886,10 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         name="SavingsAccountInterest"
                         placeholder="0"
                         value={
-                          formData.incomeDetails.otherIncomes
-                            .savingsAccountInterest
+                          incomeDetails.otherIncomes.savingsAccountInterest
                         }
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "otherIncomes",
                             "savingsAccountInterest",
                             e.target.value
@@ -949,13 +915,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="fixedDepositInterest"
                         placeholder="0"
-                        value={
-                          formData.incomeDetails.otherIncomes
-                            .fixedDepositInterest
-                        }
+                        value={incomeDetails.otherIncomes.fixedDepositInterest}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "otherIncomes",
                             "fixedDepositInterest",
                             e.target.value
@@ -981,12 +943,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="domesticDividend"
                         placeholder="0"
-                        value={
-                          formData.incomeDetails.otherIncomes.domesticDividend
-                        }
+                        value={incomeDetails.otherIncomes.domesticDividend}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "otherIncomes",
                             "domesticDividend",
                             e.target.value
@@ -1012,10 +971,9 @@ const IncomeDetails = ({ activeTab, onNext, formData, onInputChange }) => {
                         type="number"
                         name="otherIncome"
                         placeholder="0"
-                        value={formData.incomeDetails.otherIncomes.otherIncome}
+                        value={incomeDetails.otherIncomes.otherIncome}
                         onChange={(e) =>
-                          onInputChange(
-                            2,
+                          handleChange(
                             "otherIncomes",
                             "otherIncome",
                             e.target.value
