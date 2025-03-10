@@ -3,7 +3,7 @@ import BasicDetails from "./BasicDetails"
 import IncomeDetails from "./IncomeDetails"
 import Deductions from "./Deductions"
 import { useDispatch } from "react-redux"
-import { calculateNewRegime, updateFormData } from "./reducers/taxSlice"
+import { calculateNewRegime } from "./reducers/taxSlice"
 
 const Tab = () => {
   const [activeTab, setActiveTab] = useState(1)
@@ -16,13 +16,6 @@ const Tab = () => {
 
   const handleNext = () => {
     setActiveTab(activeTab + 1)
-  }
-
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    dispatch(
-      updateFormData({ tab: activeTab, section: null, field: name, value })
-    )
   }
 
   const handleSubmit = (event) => {

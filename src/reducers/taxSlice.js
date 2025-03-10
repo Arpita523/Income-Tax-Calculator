@@ -150,6 +150,7 @@ export const taxSlice = createSlice({
       totalIncome += parseFloat(incomeDetails.otherIncomes.otherIncome || 0)
 
       // Calculate total deductions
+      // eslint-disable-next-line no-unused-vars
       let totalDeductions = 0
 
       // Investments

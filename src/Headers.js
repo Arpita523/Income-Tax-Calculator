@@ -67,14 +67,14 @@ const Headers = () => {
               aria-labelledby="dropdown-button"
             >
               {years.map((year) => (
-                <a
+                <button
                   key={year}
-                  className="flex  rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer"
+                  className="flex w-full text-left rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer"
                   role="menuitem"
                   onClick={() => handleYearSelect(year)}
                 >
                   {year}
-                </a>
+                </button>
               ))}
             </div>
           </div>
